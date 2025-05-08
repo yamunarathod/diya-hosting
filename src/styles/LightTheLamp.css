@@ -1,0 +1,90 @@
+.lightthelamp-container {
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+    max-width: 100%;
+    background-color: transparent;
+  }
+  
+  .lightthelamp-inner {
+  }
+  
+  .lightthelamp-title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+  
+  .lightthelamp-desc {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 2rem;
+  }
+  
+  .lightthelamp-flex-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .lightthelamp-lamp-btn {
+    position: relative;
+    background: #fff;
+    height: 6rem;
+    width: 12rem;
+    border-radius: 45px 45px 45px 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    border: none;
+    opacity: 1;
+    transition: background 0.2s, opacity 0.2s;
+    cursor: pointer;
+  }
+
+
+  .lightthelamp-back-btn{
+    background-color: transparent
+    ;
+    color: #fff;
+    border: none;
+  }
+
+  .lightthelamp-absolute-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.2;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.4; }
+  }
+  
+  .lightthelamp-flame-rel {
+    position: relative;
+  }
+  
+  .lightthelamp-btn-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #0660A0;
+    font-weight: bold;
+    font-size: 1.5rem;
+    pointer-events: none;
+    z-index: 2;
+    width: 150px;
+  }
+  
+
+
+  
+

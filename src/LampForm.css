@@ -1,0 +1,38 @@
+.lampform-bg {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../public/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.logo-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    height: 60%;
+    width: 100vh;
+}
+
+.inflow-logo {
+    max-width: 364.82px;
+    width: 40vw;
+    height: auto;
+    max-height: 212.11px;
+}
+
+.galaxy-logo {
+    max-width: 1072.04px;
+    width: 100vw;
+    height: auto;
+    max-height: 523.63px;
+}

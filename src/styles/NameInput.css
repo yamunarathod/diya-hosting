@@ -1,0 +1,87 @@
+.nameinput-container {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+    max-width: 100%;
+    background-color: transparent;
+
+  }
+  
+  .nameinput-container:hover {
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  }
+  
+  .nameinput-inner {
+    padding: 2rem;
+  }
+  
+  .nameinput-form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .nameinput-input-wrapper {
+    position: relative;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s, border 0.2s;
+  }
+  
+  .nameinput-input-wrapper.focused {
+    box-shadow: 0 0 0 2px #6366f1;
+    border: 2px solid #6366f1;
+  }
+  
+  .nameinput-input-wrapper:not(.focused):hover {
+    border: 1px solid #a5b4fc;
+  }
+  
+  .nameinput-input {
+    display: block;
+    width: 100%;
+    padding: 17px;
+    border-radius: 2.5rem;
+    border: 3px solid #d1d5db;
+    outline: none;
+    color: #fff;
+    background: transparent;
+    font-size: 27px;
+    box-sizing: border-box;
+  }
+  
+  .nameinput-input::placeholder {
+    color: #9ca3af;
+  }
+  
+  .nameinput-error {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #dc2626;
+  }
+  
+  .nameinput-button {
+    width: 100%;
+    display: flex
+;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 2.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #0660A0;
+    background: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .nameinput-button:hover:not(:disabled) {
+    background: #3730a3;
+  }
+  
+  .nameinput-button:disabled {
+    background: #a5b4fc;
+    cursor: not-allowed;
+  }

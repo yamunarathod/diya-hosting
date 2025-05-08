@@ -1,0 +1,331 @@
+// import React, { useState, useEffect, useRef } from 'react';
+// import './styles/DisplayComponent.css';
+// import { supabase } from './supabaseClient';
+// import { io } from 'socket.io-client';
+// import { GRID_SIZE, CELL_COUNT, findEmptyGridIndex } from './utils/diyaUtils';
+
+// // Grid setup
+// const MAX_ROWS = 10;
+// const CELL_WIDTH = window.innerWidth / GRID_SIZE;
+// const CELL_HEIGHT = window.innerHeight / MAX_ROWS;
+// const ITEM_SIZE = Math.min(CELL_WIDTH, CELL_HEIGHT) * 0.75;
+// const VERTICAL_OFFSET = 5;
+
+// function DisplayComponent() {
+//   // Update the gifSrc to use the correct file format and path
+//   const gifSrc = '/assets/Diya.webm';
+//   const [names, setNames] = useState([]);
+//   const [gridState, setGridState] = useState({
+//     items: Array(CELL_COUNT).fill(null),
+//     usedCells: new Set(),
+//   });
+//   const [collecting, setCollecting] = useState(false);
+//   const [isRevealingLogo, setIsRevealingLogo] = useState(false);
+//   const [highlightedEntry, setHighlightedEntry] = useState(null); // {name}
+
+//   const queueRef = useRef([]); // <-- Add this line
+//   const animationInProgress = useRef(false);
+
+//   const hasSubscribed = useRef(false);
+//   const processedIds = useRef(new Set());
+
+//   // Socket.IO setup
+//   useEffect(() => {
+//     // const socket = io('https://coral-app-6iasr.ondigitalocean.app/');
+//     const socket = io('http://localhost:3001/');
+//     socket.on('reveal', () => {
+//       console.log('Reveal triggered via socket');
+//       setCollecting(true);
+//       setTimeout(() => {
+//         setIsRevealingLogo(true);
+//       }, 3600);
+//     });
+//     socket.on('submission', (data) => {
+//       console.log('Received submission via socket:', data);
+//     });
+//     return () => socket.disconnect();
+//   }, []);
+
+//   // BroadcastChannel setup
+//   useEffect(() => {
+//     const channel = new BroadcastChannel('diya-reveal');
+//     channel.onmessage = (event) => {
+//       if (event.data && event.data.type === 'REVEAL_DIYA') {
+//         console.log('Reveal triggered via BroadcastChannel');
+//         setCollecting(true);
+//         setTimeout(() => {
+//           setIsRevealingLogo(true);
+//         }, 3600);
+//       }
+//     };
+//     return () => channel.close();
+//   }, []);
+
+//   // Fetch initial names
+//   useEffect(() => {
+//     const fetchNames = async () => {
+//       const { data, error } = await supabase
+//         .from('submissions')
+//         .select('id, name')
+//         .order('created_at', { ascending: false });
+
+//       if (error) {
+//         console.error('Error fetching names:', error);
+//         return;
+//       }
+
+//       const nameList = data.map((item) => ({ id: item.id, name: item.name }));
+//       console.log('Fetched initial names:', nameList);
+//       setNames(nameList);
+
+//       const updatedGrid = Array(CELL_COUNT).fill(null);
+//       const updatedUsedCells = new Set();
+
+//       nameList.forEach(({ name }) => {
+//         const index = findEmptyGridIndex(updatedUsedCells);
+//         if (index !== null) {
+//           updatedGrid[index] = name;
+//           updatedUsedCells.add(index);
+//         }
+//       });
+
+//       setGridState({ items: updatedGrid, usedCells: updatedUsedCells });
+//     };
+
+//     fetchNames();
+//   }, []);
+
+//   // Real-time Supabase subscription
+//   useEffect(() => {
+//     if (hasSubscribed.current) return;
+
+//     console.log('Setting up Supabase real-time subscription');
+//     const channel = supabase
+//       .channel('submissions')
+//       .on(
+//         'postgres_changes',
+//         {
+//           event: 'INSERT',
+//           schema: 'public',
+//           table: 'submissions',
+//         },
+//         (payload) => {
+//           const newEntry = payload.new;
+//           const submissionId = newEntry?.id;
+//           const newName = newEntry?.name;
+
+//           if (!submissionId || !newName) {
+//             console.log('Invalid submission:', { submissionId, newName });
+//             return;
+//           }
+
+//           if (processedIds.current.has(submissionId)) {
+//             console.log('Skipping duplicate submission:', { submissionId, newName });
+//             return;
+//           }
+
+//           processedIds.current.add(submissionId);
+//           console.log('📡 New submission received:', { submissionId, newName });
+
+//           handleNewName(newName);
+//         }
+//       )
+//       .subscribe((status) => {
+//         console.log('Supabase subscription status:', status);
+//         if (status === 'SUBSCRIBED') {
+//           hasSubscribed.current = true;
+//         }
+//       });
+
+//     return () => {
+//       console.log('Removing Supabase channel');
+//       supabase.removeChannel(channel);
+//       hasSubscribed.current = false;
+//     };
+//   }, []);
+
+  
+//   // Handle new name arrival (queue-based)
+//   const processNextInQueue = () => {
+//     if (queueRef.current.length === 0) {
+//       animationInProgress.current = false;
+//       return;
+//     }
+//     animationInProgress.current = true;
+//     const nextName = queueRef.current.shift();
+//     setHighlightedEntry({ name: nextName });
+
+//     setTimeout(() => {
+//       setGridState((prevState) => {
+//         const updatedGrid = [...prevState.items];
+//         const usedIndices = new Set(prevState.usedCells);
+
+//         const index = findEmptyGridIndex(usedIndices);
+//         if (index !== null) {
+//           updatedGrid[index] = nextName;
+//           usedIndices.add(index);
+//         }
+
+//         return { items: updatedGrid, usedCells: usedIndices };
+//       });
+
+//       setHighlightedEntry(null);
+//       setTimeout(processNextInQueue, 100); // Process next name in queue
+//     }, 3500);
+//   };
+
+//   const handleNewName = (newName) => {
+//     queueRef.current.push(newName);
+//     if (!animationInProgress.current) {
+//       processNextInQueue();
+//     }
+//   };
+
+//   // Component render logic
+//   if (isRevealingLogo) {
+//     return (
+//       <div className="logo-reveal-container">
+//         <video
+//           src="/assets/logoreveal.mp4"
+//           autoPlay
+//           muted
+//           playsInline
+//           style={{
+//             width: '100vw',
+//             height: '100vh',
+//             objectFit: 'cover',
+//             display: 'block',
+//           }}
+//         />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div
+//       className="free-floating-container"
+//       style={{
+//         position: 'relative',
+//         width: '100vw',
+//         height: '100vh',
+//         overflow: 'hidden',
+//       }}
+//     >
+//       <video
+//         style={{
+//           position: 'absolute',
+//           width: '100%',
+//           height: '100%',
+//           objectFit: 'cover',
+//           zIndex: -1,
+//         }}
+//         autoPlay
+//         loop
+//         muted
+//         playsInline
+//       >
+//         <source src="/assets/BG.mp4" type="video/mp4" />
+//       </video>
+//       {/* Center Animation - highlighted */}
+//       {highlightedEntry && (
+//         <div
+//           className="highlighted-entry"
+//           style={{
+//             position: 'absolute',
+//             top: '50%',
+//             left: '50%',
+//             animation: 'moveToGrid 3.5s ease-in-out forwards',
+//             textAlign: 'center',
+//             pointerEvents: 'none',
+//             zIndex: 10,
+//           }}
+//         >
+//           <img
+//             src={gifSrc}
+//             style={{
+//               width: '80px',
+//               height: '80px',
+//               marginBottom: '10px',
+//             }}
+//             alt="Diya animation"
+//           />
+//           <h2
+//             style={{
+//               color: '#fff',
+//               fontSize: '3vw',
+//               fontWeight: 'bold',
+//               textShadow: '0 0 10px #000, 0 0 20px #000',
+//               margin: 0,
+//             }}
+//           >
+//             {highlightedEntry.name}
+//           </h2>
+//         </div>
+//       )}
+
+//       {/* Grid Items */}
+//       {gridState.items.map((name, index) => {
+//         if (!name) return null;
+
+//         const row = Math.floor(index / GRID_SIZE);
+//         const col = index % GRID_SIZE;
+
+//         if (row >= MAX_ROWS) return null;
+
+//         const left = col * CELL_WIDTH + (CELL_WIDTH - ITEM_SIZE) / 2;
+//         const top = row * CELL_HEIGHT + (CELL_HEIGHT - ITEM_SIZE) / 2 + VERTICAL_OFFSET;
+//         // Removed animationDelay variable
+
+//         return (
+//           <div
+//             key={`${name}-${index}`}
+//             // Removed 'swirlS' class since we don't want the animation
+//             style={{
+//               position: 'absolute',
+//               left: collecting ? '50vw' : `${left}px`,
+//               top: collecting ? '50vh' : `${top}px`,
+//               width: ITEM_SIZE,
+//               pointerEvents: 'none',
+//               textAlign: 'center',
+//               display: 'flex',
+//               flexDirection: 'column',
+//               justifyContent: 'center',
+//               alignItems: 'center',
+//               transform: collecting ? 'translate(-50%, -50%) scale(1.2)' : undefined,
+//               transition:
+//                 'left 3.5s cubic-bezier(0.23, 1, 0.32, 1), top 3.5s cubic-bezier(0.23, 1, 0.32, 1)',
+//               // Removed animation and animationDelay properties
+//             }}
+//           >
+//             <img
+//               src={gifSrc}
+//               style={{
+//                 width: ITEM_SIZE,
+//                 height: ITEM_SIZE,
+//                 display: 'block',
+//                 margin: '0 auto',
+//               }}
+//               alt="Diya animation"
+//             />
+//             <h3
+//               style={{
+//                 color: '#fff',
+//                 margin: '0px 0px 10px 0px',
+//                 fontSize: 'clamp(12px, 0.5vw, 8px)',
+//                 textShadow: '0 0 10px #000, 0 0 20px #222',
+//                 whiteSpace: 'nowrap',
+//                 overflow: 'hidden',
+//                 textOverflow: 'ellipsis',
+//                 maxWidth: '7ch',
+//               }}
+//             >
+//               {name}
+//             </h3>
+//           </div>
+//         );
+//       })}
+//     </div>
+//   ); // <-- This closes the return statement
+// } // <-- Add this closing brace for DisplayComponent function
+
+// export default DisplayComponent;

@@ -1,0 +1,323 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.free-floating-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.free-floating-container h3 {
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  font-size: clamp(6px, 0.5vw, 8px);
+  text-shadow: 0 0 10px #000, 0 0 20px #222;
+  background: transparent;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+@keyframes subtleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes verticalDrift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulseScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes sway {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 10px #000, 0 0 20px #222; }
+  50% { text-shadow: 0 0 15px #000, 0 0 30px #222; }
+}
+
+@keyframes nameFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes nameSway {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
+}
+
+@keyframes nameScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.free-floating-container video {
+  display: block;
+  margin: 0 auto;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.grid-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gif-grid {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  background-color: transparent;
+  padding: 2px;
+}
+
+.grid-gif {
+  display: block;
+  width: unset;
+  height: unset;
+  object-fit: contain;
+  margin-top: 2px;
+  animation: diya3DEntry 5s ease-out forwards;
+  transform-style: preserve-3d;
+}
+
+@keyframes diya3DEntry {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateY(90deg) scale(0.5);
+  }
+  50% {
+    opacity: 0.7;
+    transform: perspective(1000px) rotateY(0deg) scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateY(0deg) scale(1);
+  }
+}
+
+.grid-item h3 {
+  margin: 0;
+  padding: 0;
+  color: #eee;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(10px, 1vw, 16px);
+  line-height: 1.2;
+  background-color: transparent;
+}
+
+@keyframes newEntryPopup {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes persistentPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.name-animate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) perspective(1000px);
+  transform-style: preserve-3d;
+  z-index: 10;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 165, 0, 0.6);
+  font-size: clamp(10px, 1vw, 16px);
+  font-weight: bold;
+  opacity: 1;
+  width: max-content;
+  max-width: 90%;
+  animation: name3DMoveUp 2.5s ease-out forwards;
+  transition: all 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes name3DMoveUp {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) perspective(1000px) rotateX(20deg) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -150%) perspective(1000px) rotateX(0deg) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -250%) perspective(1000px) rotateX(-10deg) scale(1.5);
+  }
+}
+
+.name-hidden {
+  opacity: 0 !important;
+  pointer-events: none;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.logo-reveal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  z-index: 100;
+  animation: fadeInContainer 0.5s ease forwards;
+}
+
+@keyframes fadeInContainer {
+  to {
+    opacity: 1;
+  }
+}
+
+.logo-grid {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  background-color: transparent;
+  border: none;
+}
+
+.logo-piece {
+  width: 100%;
+  height: 100%;
+  background-image: url('../../public/assets/logo.png');
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(0.5) rotateZ(180deg);
+  border: none;
+  margin: 0;
+  padding: 0;
+  will-change: transform, opacity;
+}
+
+.logo-piece-animate {
+  animation: logoPieceReveal 0.8s ease-out forwards;
+}
+
+@keyframes logoPieceReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotateZ(180deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateZ(0deg);
+  }
+}
+
+.diya-collect {
+  z-index: 10;
+}
+
+@keyframes swirlS {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(15px) translateY(-10px);
+  }
+  50% {
+    transform: translateX(-15px) translateY(0);
+  }
+  75% {
+    transform: translateX(15px) translateY(10px);
+  }
+}
+
+@keyframes swirlToCenter {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(20px, -20px);
+  }
+  50% {
+    transform: translate(0, -30px);
+  }
+  75% {
+    transform: translate(-20px, -20px);
+  }
+  100% {
+    transform: translate(-50%, -50%);
+  }
+}
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
