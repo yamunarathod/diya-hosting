@@ -551,7 +551,7 @@ function DisplayComponent() {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                maxWidth: '7ch',
+                maxWidth: '12ch',
               }}
             >
               {name}
